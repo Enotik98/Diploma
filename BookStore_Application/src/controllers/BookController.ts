@@ -17,6 +17,21 @@ export const getAllBooks = async (req: Request, res:Response) =>{
     }
 }
 
+export const getPageBooks = async (req: Request, res: Response) => {
+    try {
+        const page: number = Number(req.params.page);
+
+        const result = await bookRepositorie.getBooks(page, 10);
+        return res.status(200).json(result);
+
+    }  catch (err) {
+        if (err instanceof CustomError) {
+            return res.status(err.statusCode).send({message: err.message});
+        }
+        return res.status(500).send(`Server error\n ${err}`);
+    }
+}
+
 export const getBookById = async (req: Request, res: Response) => {
     try {
         const id: number = Number(req.params.id);

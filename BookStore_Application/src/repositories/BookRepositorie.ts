@@ -21,6 +21,35 @@ export class BookRepositorie {
             throw new CustomError(String(err), 500);
         }
     }
+    async getBooks(page: number = 1, pageSize: number = 10): Promise<{ books: Book[], totalCount: number }> {
+        const offset = (page - 1) * pageSize;
+        const sql = `
+            SELECT b.id, b.title, b.author, b.pub_year, b.price, b.quantity, 
+                   ARRAY_AGG(jsonb_build_object('id', ge.id, 'genre', ge.genre)) AS genres,
+                   b.about AS about
+            FROM books b 
+            LEFT JOIN books_genres bg ON b.id = bg.book_id 
+            LEFT JOIN genres ge ON bg.genre_id = ge.id
+            GROUP BY b.id, b.title, b.author, b.pub_year, b.price, b.quantity, b.about
+            ORDER BY b.id
+            LIMIT $1
+            OFFSET $2;
+        `;
+    
+        const countSql = `SELECT COUNT(*) FROM books;`;
+    
+        try {
+            const result: QueryResult<Book> = await this.pool.query(sql, [pageSize, offset]);
+            const countResult: QueryResult<{ count: number }> = await this.pool.query(countSql);
+            const totalCount = countResult.rows[0].count;
+    
+            return { books: result.rows, totalCount };
+    
+        } catch (err) {
+            throw new CustomError(String(err), 500);
+        }
+    }
+    
 
     async getBookById(id: number): Promise<Book | null> {
         const sql = "SELECT b.id, b.title, b.author, b.pub_year, b.price, b.quantity, ARRAY_AGG(jsonb_build_object('id', ge.id, 'genre', ge.genre)) AS genres, b.about " +
