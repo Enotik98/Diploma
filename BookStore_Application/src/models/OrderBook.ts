@@ -1,7 +1,7 @@
 import { Book } from './Book';
 
 export interface OrderBook {
-    id: number,
-    book: Book,
+    id: number | null,
+    book: Book | number,
     quantity: number
 }

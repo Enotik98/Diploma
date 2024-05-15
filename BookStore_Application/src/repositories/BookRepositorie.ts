@@ -7,10 +7,11 @@ export class BookRepositorie {
     constructor(private pool: Pool) {}
 
     async getAllBooks(): Promise<Book[]> {
-        const sql = "SELECT b.id, b.title, b.author, b.pub_year, b.price, b.quantity, ARRAY_AGG(jsonb_build_object('id', ge.id, 'gemre', ge.genre)), b.about AS genres " +
+        const sql = "SELECT b.id, b.title, b.author, b.pub_year, b.price, b.quantity, " +
+                    " ARRAY_AGG(jsonb_build_object('id', ge.id, 'gemre', ge.genre)) AS genres, b.about , b.isbn" +
                     " FROM books b LEFT JOIN books_genres bg ON b.id = bg.book_id " +
                     " LEFT JOIN genres ge ON bg.genre_id = ge.id"+
-                    " GROUP BY b.id, b.title, b.author, b.pub_year, b.price, b.quantity, b.about; ";
+                    " GROUP BY b.id, b.title, b.author, b.pub_year, b.price, b.quantity, b.about, b.isbn; ";
     
         try {
             const result: QueryResult<Book> = await this.pool.query(sql);
@@ -26,11 +27,11 @@ export class BookRepositorie {
         const sql = `
             SELECT b.id, b.title, b.author, b.pub_year, b.price, b.quantity, 
                    ARRAY_AGG(jsonb_build_object('id', ge.id, 'genre', ge.genre)) AS genres,
-                   b.about AS about
+                   b.about AS about, b.isbn
             FROM books b 
             LEFT JOIN books_genres bg ON b.id = bg.book_id 
             LEFT JOIN genres ge ON bg.genre_id = ge.id
-            GROUP BY b.id, b.title, b.author, b.pub_year, b.price, b.quantity, b.about
+            GROUP BY b.id, b.title, b.author, b.pub_year, b.price, b.quantity, b.about, b.isbn
             ORDER BY b.id
             LIMIT $1
             OFFSET $2;
@@ -52,11 +53,11 @@ export class BookRepositorie {
     
 
     async getBookById(id: number): Promise<Book | null> {
-        const sql = "SELECT b.id, b.title, b.author, b.pub_year, b.price, b.quantity, ARRAY_AGG(jsonb_build_object('id', ge.id, 'genre', ge.genre)) AS genres, b.about " +
+        const sql = "SELECT b.id, b.title, b.author, b.pub_year, b.price, b.quantity, ARRAY_AGG(jsonb_build_object('id', ge.id, 'genre', ge.genre)) AS genres, b.about, b.isbn" +
         " FROM books b LEFT JOIN books_genres bg ON b.id = bg.book_id " +
         " LEFT JOIN genres ge ON bg.genre_id = ge.id" +
         " WHERE b.id = $1" +
-        " GROUP BY b.id, b.title, b.author, b.pub_year, b.price, b.quantity, b.about; ";
+        " GROUP BY b.id, b.title, b.author, b.pub_year, b.price, b.quantity, b.about, b.isbn; ";
         const values = [id];
 
         try {
@@ -64,14 +65,14 @@ export class BookRepositorie {
             if (result.rowCount === 0) return null;
             else return result.rows[0];
         } catch (err) {
-            throw new Error('Error creating book: ' + err);
+            throw new Error('Error get book: ' + err);
         }
 
     }
 
     async createBook(book: Book): Promise<boolean> {
-        const insertBookSql = "INSERT INTO books (title, author, pub_year, price, quantity, about) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;";
-        const values = [book.title, book.author, book.pub_year, book.price, book.quantity, book.about];
+        const insertBookSql = "INSERT INTO books (title, author, pub_year, price, quantity, about, isbn) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;";
+        const values = [book.title, book.author, book.pub_year, book.price, book.quantity, book.about, book.isbn];
     
         try {
             const bookResult = await this.pool.query(insertBookSql, values);
@@ -93,8 +94,8 @@ export class BookRepositorie {
     }
 
     async updateBook(book: Book): Promise<boolean> {
-        const sql = "UPDATE books SET title = $1, author = $2, pub_year = $3, price = $4, quantity = $5, about = $6 WHERE id = $7";
-        const values = [book.title, book.author, book.pub_year, book.price, book.quantity, book.about, book.id];
+        const sql = "UPDATE books SET title = $1, author = $2, pub_year = $3, price = $4, quantity = $5, about = $6 , isbn = $7 WHERE id = $8";
+        const values = [book.title, book.author, book.pub_year, book.price, book.quantity, book.about, book.isbn, book.id];
 
         try {
             const result = await this.pool.query(sql, values);

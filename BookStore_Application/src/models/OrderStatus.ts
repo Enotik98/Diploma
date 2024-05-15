@@ -1,5 +1,6 @@
 export enum OrderStatus {
     PROCESSED = 'PROCESSED', 
     NEW = 'NEW', 
-    COMPLETED = 'COMPLETED'
+    COMPLETED = 'COMPLETED',
+    BASKET = 'BASKET'
 }

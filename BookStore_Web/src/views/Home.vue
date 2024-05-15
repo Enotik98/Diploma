@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import {sendRequest} from "../scipts/request.js";
+import {sendRequest} from "../scripts/request.js";
 import BookCard from "../components/BookCard.vue";
 
 export default {
@@ -60,8 +60,21 @@ export default {
 .body {
   display: flex;
 }
+
+.search-criteria {
+  padding: 1em;
+  flex-basis: 24em;
+  flex-shrink: 0;
+}
+
+.admin-panel {
+  padding: 1em;
+  flex-basis: 24em;
+  flex-shrink: 0;
+}
+
 .list-books {
-  max-width: calc(100% - 3em);
+  max-width: calc(100% - 48em);
   flex-grow: 1;
 }
 
@@ -69,11 +82,11 @@ export default {
   justify-content: center;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, max-content));
-  gap: 1em;
+  gap: 2em;
 }
 
 .card-item {
-  max-width: 18rem;
+  max-width: 300px;
   /*opacity: 0.5;*/
   margin: 1rem;
   box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.25);

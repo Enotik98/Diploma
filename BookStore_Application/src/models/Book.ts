@@ -8,5 +8,6 @@ export interface Book {
     price: number,
     quantity: number,
     genre: Genre[],
-    about: string
+    about: string,
+    isbn: string
 }

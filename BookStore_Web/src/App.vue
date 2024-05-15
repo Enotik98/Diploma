@@ -1,9 +1,5 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
+  <Header v-if="showHeader"/>
   <!-- <header>
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
@@ -19,13 +15,44 @@ import HelloWorld from './components/HelloWorld.vue'
 
   <RouterView />
 </template>
+<script>
+
+import {userStore} from "@/stores/userStore.js";
+
+import {fetchUser} from "@/scripts/services.js";
+import Header from "@/components/Header.vue";
+
+export default {
+  components: {Header},
+  computed: {
+    showHeader() {
+      return this.$route.path !== '/login';
+    }
+  },
+  mounted() {
+    const store = userStore();
+    fetchUser(store);
+  },
+  methods: {
+    // async fetchUser() {
+    //   const store = userStore();
+    //   console.log(store);
+    //   if (store.$state.isLoggedIn) {
+    //     const response = await sendRequest('/user/profile', 'GET', null);
+    //     if (response.ok) {
+    //       const data = await response.json();
+    //       store.setUser(data);
+    //     } else {
+    //       store.logout();
+    //     }
+    //   }
+    // }
+  }
+}
+</script>
 
 <style scoped>
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-}
+
 /*header {*/
 /*  line-height: 1.5;*/
 /*  max-height: 100vh;*/
