@@ -57,7 +57,7 @@ export default {
       // genres: [],
       // selectDays: 7,
       order: {
-        book_id: Number,
+        bookId: Number,
         quantity: 1,
       },
       isAvailable: false,
@@ -92,8 +92,8 @@ export default {
     },
     async addToOrder() {
       try {
-        this.order.book_id = this.$route.params.id;
-        const response = await sendRequest("/order/book", "POST", this.order);
+        this.order.bookId = this.$route.params.id;
+        const response = await sendRequest("/sale/basket", "POST", this.order);
         if (response.ok) {
           console.log('ok')
         }

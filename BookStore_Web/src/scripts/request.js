@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000/api";
+const BASE_URL = "http://localhost:8083/api";
 
 export async function sendRequest(url, method, data) {
     let headers = "";
@@ -17,7 +17,7 @@ export async function sendRequest(url, method, data) {
 
     const response = await fetch(BASE_URL + url, request);
     if (response.status === 401) {
-        localStorage.clear;
+        localStorage.clear();
     }
 
     return response

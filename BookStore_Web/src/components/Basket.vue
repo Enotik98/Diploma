@@ -1,32 +1,36 @@
 <template>
   <div id="basket">
     <h1>Shopping Basket</h1>
-    <div class="list-basket">
+    <div class="list-basket" v-for="elem in basket.saleBooks" :key="elem.book.id">
       <div class="item-basket">
         <div class="item-basket__img"><img src="../assets/car.jpg" alt=""></div>
         <div class="item-basket__info">
-          <p>Book</p>
-          <p>Author</p>
-          <p>year</p>
+          <p>{{elem.book.title}}</p>
+          <p>{{elem.book.author}}</p>
+          <p>{{elem.book.pub_year}}</p>
         </div>
         <div class="item-basket__quantity">
           <label class="form-label">Quantity</label>
-          <input type="number" class="form-control">
+          <input type="number" class="form-control" v-model="elem.quantity" >
         </div>
         <div class="item-basket__price">
           <p>Price</p>
-          <p>300</p>
+          <p>{{elem.book.price / 100}}</p>
         </div>
         <div class="item-basket__btn">
           <button class="btn btn-outline-danger">Delete</button>
         </div>
       </div>
     </div>
+    <div class="order-btn">
+      <button class="btn btn-outline-dark" @click="creatOrder">Order</button>
+    </div>
   </div>
 </template>
 
 <script>
 import {sendRequest} from "@/scripts/request.js";
+import { saveAs } from 'file-saver';
 
 export default {
   name: "Basket",
@@ -35,7 +39,8 @@ export default {
   },
   data() {
     return {
-      basket: {}
+      basket: {},
+      amount: 0
     }
   },
   mounted() {
@@ -43,11 +48,38 @@ export default {
   },
   methods: {
     async getBasket() {
-      const response = await sendRequest("/order/user/basket", "GET", null);
+      const response = await sendRequest("/user/basket", "GET", null);
       if (response.ok) {
         this.basket = await response.json();
+        this.amount = this.basket.amount / 100;
         console.log(this.basket);
       }
+    },
+    async creatOrder() {
+      const response = await sendRequest("/user/order", "POST", {"id": this.basket.id});
+      if (response.ok) {
+        this.modalClose();
+      }
+    },
+    downloadFile() {
+      let headers = "";
+      let token = localStorage.getItem("Token");
+      headers = token? "Bearer " + token : "";
+      fetch('http://localhost:8083/api/analitycs/arima-excel', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': headers
+        },
+      })
+          .then(response => response.blob())
+          .then(blob => {
+            // Збереження файлу з Blob об'єкту
+            saveAs(blob, 'forecast.xlsx');
+          })
+          .catch(error => {
+            console.error('Помилка завантаження файлу:', error);
+          });
     }
   }
 }
@@ -65,7 +97,8 @@ export default {
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: 1fr;
   grid-column-gap: 10px;
-  grid-row-gap: 0px;
+  grid-row-gap: 1em;
+  margin-bottom: 1em;
 }
 
 .item-basket__img {
@@ -81,6 +114,9 @@ export default {
 .item-basket__info {
   grid-area: 1/2/2/4;
 }
+.item-basket__info p:nth-last-child(1) {
+  margin-bottom: 0;
+}
 
 .item-basket__quantity {
   grid-area: 1/4/2/5;
@@ -91,10 +127,7 @@ export default {
 
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-}
-.item-basket__price {
-
+  align-items: center;
 }
 
 .item-basket__btn {
@@ -102,5 +135,14 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.order-btn {
+  float: right;
+  margin-top: 2em;
+  margin-right: 4em;
+}
+.order-btn button {
+  width: 100px;
 }
 </style>

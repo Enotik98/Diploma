@@ -38,6 +38,7 @@
 
 :root {
   --blue: #011AFBFF;
+  --blue-opacity: rgba(54, 74, 255, 0.75);
 }
 
 /* @media (prefers-color-scheme: dark) {

@@ -117,12 +117,12 @@ export default {
     async signInForm() {
       if (this.isLoginFormVisible) {
         if (this.formData.email !== '' && this.formData.password !== '') {
-          const response = await sendRequest('/auth/login', 'POST', this.formData)
+          const response = await sendRequest('/login', 'POST', this.formData)
           console.log(await response)
           if (response.ok) {
             const store = userStore();
             const data = await response.json();
-            localStorage.setItem("Token", data['token']);
+            localStorage.setItem("Token", data['Token']);
             store.login();
             await fetchUser(store);
             // this.$store.dispatch('fetchUser');
@@ -143,11 +143,11 @@ export default {
     async signUpForm() {
       if (!this.isLoginFormVisible) {
         if (this.formData.email !== '' && this.formData.password !== '' && this.validateConfirmPassword()) {
-          const response = await sendRequest('/auth/registration', 'POST', this.formData)
+          const response = await sendRequest('/registration', 'POST', this.formData)
           if (response.ok) {
             const store = userStore();
             const data = await response.json();
-            localStorage.setItem("Token", data['token']);
+            localStorage.setItem("Token", data['Token']);
 
             store.login();
             await fetchUser(store);

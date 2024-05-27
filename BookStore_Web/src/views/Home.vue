@@ -32,26 +32,11 @@ export default {
   },
   methods: {
     async getBooks() {
-      const response = await sendRequest(`/book/pages/${this.page}`, 'GET');
+      const response = await sendRequest(`/book`, 'GET');
       if (response.status === 200) {
-        const res = await response.json();
-        this.books = res.books;
-        this.countPages = res.totalCount;
-
-        console.log(res);
+        this.books = await response.json();
       }
     },
-
-    async submitForm(e) {
-      e.preventDefault();
-      console.log("1");
-      const response = await sendRequest('/auth/login', 'POST', {"email": "alex", "password": "bla"})
-      console.log(response);
-      if (response.status === 200) {
-        const res = await response.json();
-        console.log(res);
-      }
-    }
   }
 }
 </script>
