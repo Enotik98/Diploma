@@ -1,6 +1,9 @@
 <template>
   <div id="basket">
     <h1>Shopping Basket</h1>
+    <div v-if="!showBasket">
+      <p>Your basket is empty</p>
+    </div>
     <div class="list-basket" v-for="elem in basket.saleBooks" :key="elem.book.id">
       <div class="item-basket">
         <div class="item-basket__img"><img src="../assets/car.jpg" alt=""></div>
@@ -15,14 +18,14 @@
         </div>
         <div class="item-basket__price">
           <p>Price</p>
-          <p>{{elem.book.price / 100}}</p>
+          <p>{{(elem.book.price / 100).toFixed(2)}}</p>
         </div>
         <div class="item-basket__btn">
           <button class="btn btn-outline-danger">Delete</button>
         </div>
       </div>
     </div>
-    <div class="order-btn">
+    <div class="order-btn" v-if="showBasket">
       <button class="btn btn-outline-dark" @click="creatOrder">Order</button>
     </div>
   </div>
@@ -30,7 +33,6 @@
 
 <script>
 import {sendRequest} from "@/scripts/request.js";
-import { saveAs } from 'file-saver';
 
 export default {
   name: "Basket",
@@ -40,7 +42,8 @@ export default {
   data() {
     return {
       basket: {},
-      amount: 0
+      amount: 0,
+      showBasket: false
     }
   },
   mounted() {
@@ -51,7 +54,11 @@ export default {
       const response = await sendRequest("/user/basket", "GET", null);
       if (response.ok) {
         this.basket = await response.json();
-        this.amount = this.basket.amount / 100;
+        if (this.basket && this.basket.saleBooks.length !== 0) {
+          this.showBasket = true
+        }
+        // this.amount = this.basket.amount / 100;
+
         console.log(this.basket);
       }
     },
@@ -61,26 +68,6 @@ export default {
         this.modalClose();
       }
     },
-    downloadFile() {
-      let headers = "";
-      let token = localStorage.getItem("Token");
-      headers = token? "Bearer " + token : "";
-      fetch('http://localhost:8083/api/analitycs/arima-excel', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': headers
-        },
-      })
-          .then(response => response.blob())
-          .then(blob => {
-            // Збереження файлу з Blob об'єкту
-            saveAs(blob, 'forecast.xlsx');
-          })
-          .catch(error => {
-            console.error('Помилка завантаження файлу:', error);
-          });
-    }
   }
 }
 </script>

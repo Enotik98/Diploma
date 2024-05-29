@@ -1,10 +1,10 @@
 <template>
   <div class="container d-flex">
     <div class="w-100" id="user-list">
-      <div class="">
-        <p class="title">Orders</p>
-        <table class="table table-hover">
-          <thead>
+      <div class="table-responsive">
+        <p class="title">Users</p>
+        <table class="table table-hover ">
+          <thead class="thead-dark">
           <tr>
             <th scope="col">#</th>
             <th scope="col">Email</th>
@@ -14,10 +14,10 @@
           </thead>
           <tbody>
           <tr v-for="user in users" :key="user.id" @click="openWindowUser(user)">
-            <th>{{ user.id }}</th>
-            <th>{{ user.email }}</th>
-            <th> {{ user.firstName }}</th>
-            <th>{{ user.lastName }}</th>
+            <td>{{ user.id }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.firstName }}</td>
+            <td>{{ user.lastName }}</td>
           </tr>
           </tbody>
         </table>
@@ -27,19 +27,19 @@
   <ModalWindow ref="ModalWindow">
     <div id="user-modal">
       <h3>User {{ chooseUser.id }}</h3>
-      <div>
-        <p>User Role: {{ chooseUser.role }}</p>
+      <div class="form-group">
+        <label>User Role:</label>
         <select class="form-select" v-model="role">
           <option value="CLIENT">Client</option>
           <option value="ADMIN">Admin</option>
           <option value="SELLER">Seller</option>
         </select>
       </div>
-      <div>
-        <p>User Blocked: <input type="checkbox" v-bind="chooseUser.blocked" disabled></p>
-        <input type="checkbox" v-model="isBlocked">
+      <div class="form-group">
+        <label>User Blocked: </label>
+        <input type="checkbox" v-model="isBlocked" class="form-check-input ms-2">
       </div>
-      <div>
+      <div class="form-group">
         <button class="btn btn-outline-dark" @click="saveUser">Save</button>
       </div>
     </div>
@@ -55,7 +55,7 @@ export default {
   components: {ModalWindow},
   data() {
     return {
-      users: {},
+      users: [],
       chooseUser: {},
       role: "",
       isBlocked: false
@@ -72,7 +72,7 @@ export default {
           this.users = await response.json();
         }
       } catch (e) {
-        console.error(e)
+        console.error(e);
       }
     },
     async saveUser() {
@@ -86,7 +86,7 @@ export default {
           this.$refs.ModalWindow.closeModal();
         }
       } catch (e) {
-        console.error(e)
+        console.error(e);
       }
     },
     openWindowUser(user) {
@@ -100,15 +100,52 @@ export default {
 </script>
 
 <style scoped>
-#user-modal {
-  width: 1000px;
-  height: 80vh;
-  position: relative;
-  align-items: center;
+.container {
+  padding: 2rem;
 }
 
 #user-list {
   background-color: rgba(255, 255, 255, 0.8);
-  padding: 2em 1em;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/*.table-hover tbody tr:hover {*/
+/*  cursor: pointer;*/
+/*  background-color: rgba(0, 0, 0, 0.075);*/
+/*}*/
+
+#user-modal {
+  width: 500px;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#user-modal h3 {
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-select {
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+
+.btn-outline-dark {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 0.25rem;
 }
 </style>

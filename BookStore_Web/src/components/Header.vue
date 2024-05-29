@@ -4,10 +4,10 @@
       <span><router-link to="/" class="logo">BookStore</router-link></span>
       <ul>
         <li><router-link to="/" class="link" exact><div class="nav-item" >Catalog</div></router-link></li>
-        <li><router-link to="/orders" class="link" exact><div class="nav-item">Orders</div></router-link></li>
-        <li><router-link to="/users" class="link" exact><div class="nav-item">Users</div></router-link></li>
-        <li><router-link to="/analytics" class="link" exact><div class="nav-item">Analytics</div></router-link></li>
-        <li><router-link to="/profile" class="link" exact><div class="nav-item" >Profile</div></router-link></li>
+        <li v-if="store.$state.userRole === 'ADMIN' || store.$state.userRole === 'SELLER'"><router-link to="/orders" class="link" exact><div class="nav-item">Orders</div></router-link></li>
+        <li v-if="store.$state.userRole === 'ADMIN' || store.$state.userRole === 'SELLER'"><router-link to="/users" class="link" exact><div class="nav-item">Users</div></router-link></li>
+        <li v-if="store.$state.userRole === 'ADMIN'"><router-link to="/analytics" class="link" exact><div class="nav-item">Analytics</div></router-link></li>
+        <li v-if="store.$state.isLoggedIn"><router-link to="/profile" class="link" exact><div class="nav-item" >Profile</div></router-link></li>
         <li v-if="!store.$state.isLoggedIn"><router-link to="/login" class="link" exact><div class="nav-item" >Sign in</div></router-link></li>
         <li v-if="store.$state.isLoggedIn"><div @click="logoutSys" class="link"><div class="nav-item" >Logout</div></div></li>
         <li v-if="store.$state.isLoggedIn"><div @click="openModal" class="nav-item">Basket</div></li>

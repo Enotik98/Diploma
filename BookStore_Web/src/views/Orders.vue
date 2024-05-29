@@ -64,7 +64,7 @@
 
   </div>
   <ModalWindow ref="ModalWindow">
-    <OrderModal :order="chooseOrder" :modal-close="()=>{this.$refs.ModalWindow.closeModal()}" />
+    <OrderModal :order="chooseOrder" :modal-close="()=>{this.$refs.ModalWindow.closeModal(); getOrders();}" :is-user="false"/>
   </ModalWindow>
   <!--  <ModalWindow ref="ModalWindow">-->
   <!--    <ExtensionRequestModal :extension-request="chooseRequest" :close-modal-window="()=>{this.$refs.ModalWindow.closeModal()}" :update-list-request="getExtensionRequests"/>-->

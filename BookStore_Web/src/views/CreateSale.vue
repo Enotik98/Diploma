@@ -17,7 +17,9 @@
       <ul class="list-group">
         <li class="list-group-item" v-for="book in searchResults" :key="book.id">
           <div class="d-flex align-items-center">
-            <img :src="book.image" alt="Book cover" class="img-thumbnail" width="50" height="75">
+            <img src="../assets/car.jpg" alt="Book cover" class="img-thumbnail" >
+
+<!--            <img :src="book.image" alt="Book cover" class="img-thumbnail" width="50" height="75">-->
             <div class="ml-3">
               <h5 class="mb-1">{{ book.title }}</h5>
               <small>ISBN: {{ book.isbn }} | {{ book.author }}</small>
@@ -33,7 +35,8 @@
       <ul class="list-group">
         <li class="list-group-item" v-for="(book, index) in selectedBooks" :key="book.id">
           <div class="d-flex align-items-center">
-            <img :src="book.image" alt="Book cover" class="img-thumbnail" width="50" height="75">
+            <img src="../assets/car.jpg" alt="Book cover" class="img-thumbnail" >
+<!--            <img :src="book.image" alt="Book cover" class="img-thumbnail" width="50" height="75">-->
             <div class="ml-3 w-100">
               <div class="d-flex justify-content-between">
                 <div>
@@ -118,5 +121,11 @@ export default {
 }
 .search-results, .selected-books {
   margin-top: 1em;
+}
+.img-thumbnail {
+  width: 80px;
+  height: 100px;
+  object-fit: cover;
+  margin-right: 10px;
 }
 </style>

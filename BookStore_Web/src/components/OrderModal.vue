@@ -1,35 +1,40 @@
 <template>
   <div id="order-box">
-    <h1>Order {{ order.id }}</h1>
-    <div>
-      <h3>User</h3>
-      <p>Email: {{order.user.email}}</p>
-      <p>First Name: {{order.user.firstName}}</p>
-      <p>Last Name: {{order.user.lastName}}</p>
-      <p>Phone: {{order.user.phone}}</p>
+    <h1>Order #{{ order.id }}</h1>
+    <div class="user-info">
+      <h3>User Information</h3>
+      <p><strong>Email:</strong> {{ order.user.email }}</p>
+      <p><strong>First Name:</strong> {{ order.user.firstName }}</p>
+      <p><strong>Last Name:</strong> {{ order.user.lastName }}</p>
+      <p><strong>Phone:</strong> {{ order.user.phone }}</p>
     </div>
-    <div class="list-order" v-for="elem in order.saleBooks" :key="elem.book.id">
-      <div class="item-order">
-        <div class="item-order__img"><img src="../assets/car.jpg" alt=""></div>
+    <div class="list-order">
+      <div class="item-order" v-for="elem in order.saleBooks" :key="elem.book.id">
+        <div class="item-order__img">
+          <img src="../assets/car.jpg" alt="">
+        </div>
         <div class="item-order__info">
-          <p>{{ elem.book.title }}</p>
-          <p>{{ elem.book.author }}</p>
-          <p>{{ elem.book.pub_year }}</p>
+          <p><strong>Title:</strong> {{ elem.book.title }}</p>
+          <p><strong>Author:</strong> {{ elem.book.author }}</p>
+          <p><strong>Published Year:</strong> {{ elem.book.pub_year }}</p>
         </div>
         <div class="item-order__quantity">
           <label class="form-label">Quantity</label>
-          <input type="number" class="form-control" v-model="elem.quantity">
+          <input type="number" class="form-control" v-model="elem.quantity" :disabled="isUser">
         </div>
         <div class="item-order__price">
-          <p>Price</p>
-          <p>{{ elem.book.price / 100 }}</p>
+          <p><strong>Price:</strong></p>
+          <p>{{ (elem.book.price / 100).toFixed(2) }}</p>
         </div>
-        <div class="item-order__btn">
+        <div class="item-order__btn" v-if="!isUser">
           <button class="btn btn-outline-danger">Delete</button>
         </div>
       </div>
     </div>
-    <div class="order-btn">
+    <div class="order-summary">
+      <p><strong>Total amount:</strong> {{ (order.amount / 100).toFixed(2) }}</p>
+    </div>
+    <div class="order-btn" v-if="!isUser">
       <button class="btn btn-outline-dark" @click="closeOrder">Finish Order</button>
     </div>
   </div>
@@ -42,7 +47,8 @@ export default {
   name: "OrderModal",
   props: {
     order: Object,
-    modalClose: Function
+    modalClose: Function,
+    isUser: Boolean,
   },
   data() {
     return {
@@ -62,54 +68,72 @@ export default {
 
 <style scoped>
 #order-box {
+  /*width: 100%;*/
   width: 1000px;
-  height: 80vh;
-  position: relative;
-  align-items: center;
-
-}
-.item-order {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: 1fr;
-  grid-column-gap: 10px;
-  grid-row-gap: 1em;
-  margin-bottom: 1em;
+  /*margin: auto;*/
+  padding: 20px;
 }
 
-.item-order__img {
-  grid-area: 1/1/2/2;
+.user-info {
+  margin-bottom: 20px;
 }
 
-.item-order__img img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.user-info h3 {
+  margin-bottom: 10px;
 }
 
-.item-order__info {
-  grid-area: 1/2/2/4;
-}
-.item-order__info p:nth-last-child(1) {
-  margin-bottom: 0;
+.user-info p {
+  margin: 5px 0;
 }
 
-.item-order__quantity {
-  grid-area: 1/4/2/5;
-}
-
-.item-order__price {
-  grid-area: 1/5/2/6;
-
+.list-order {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
-.item-order__btn {
-  grid-area: 1/6/2/7;
-  display: flex;
-  justify-content: center;
+.item-order {
+  display: grid;
+  grid-template-columns: 100px 1fr 150px 100px 80px;
+  gap: 10px;
   align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.item-order__img img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.item-order__info p,
+.item-order__price p {
+  margin: 0;
+}
+
+.item-order__quantity input {
+  width: 80px;
+}
+
+.item-order__btn button {
+  width: 100%;
+}
+
+.order-summary {
+  text-align: right;
+  margin-bottom: 20px;
+}
+.order-btn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.order-btn button {
+  width: 150px;
 }
 </style>

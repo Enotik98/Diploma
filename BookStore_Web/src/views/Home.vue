@@ -7,9 +7,9 @@
         </div>
       </div>
     </div>
-    <div>
-      <button class="btn btn-outline-dark" @click="openModal">Add Book</button>
-      <button class="btn btn-outline-dark" @click="()=>{this.$refs.ModalWindowGenre.openModal()}">Genre</button>
+    <div v-if="store.$state.userRole === 'ADMIN' " class="book-manager m-3" >
+      <button class="btn btn-light" @click="openModal">Add Book</button>
+      <button class="btn btn-light mt-2" @click="()=>{this.$refs.ModalWindowGenre.openModal()}">Genre</button>
     </div>
   </div>
   <ModalWindow ref="ModalWindow">
@@ -27,7 +27,7 @@ import {getGenreList} from "@/scripts/utils.js";
 import AddBookModal from "@/components/AddBookModal.vue";
 import ModalWindow from "@/components/ModalWindow.vue";
 import GenreModal from "@/components/genreModal.vue";
-
+import {userStore} from "@/stores/userStore.js";
 export default {
   name: 'HomeV',
   components: {
@@ -42,8 +42,15 @@ export default {
       page: 1,
       countPages: Number,
       books: [],
-      genres: []
+      genres: [],
     }
+  },
+  setup() {
+    const store = userStore();
+
+    return {
+      store
+    };
   },
   mounted() {
     this.getBooks();
@@ -115,6 +122,10 @@ export default {
   margin: 1rem;
   box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.25);
   border-radius: 0.5rem;
+}
+.book-manager {
+  display: flex;
+  flex-direction: column;
 }
 
 

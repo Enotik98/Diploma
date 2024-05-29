@@ -1,67 +1,65 @@
 <template>
-  <div class="">
-    <div class="body container">
-      <div class="profile-body">
-        <div class="personal-data">
-          <label class="profile-title">Personal Data</label>
-          <form @submit.prevent="updateUserInfo">
-            <div class="personal_body">
-              <div class="body_column">
-                <div class="body_column-item">
-                  <label class="">First Name*:</label>
-                  <input v-model="user.firstName" type="text" class="form-control" placeholder="First Name"
-                         required maxlength="256">
-                </div>
-                <div class="body_column-item">
-                  <label class="">Last Name*:</label>
-                  <input v-model="user.lastName" type="text" class="form-control" placeholder="Last Name" required
-                         maxlength="256">
-                </div>
-                <div class="body_column-item">
-                  <label class="">Email:</label>
-                  <input type="text" class="form-control" :value="user.email" readonly>
-                </div>
-                <div class="body_column-item">
-                  <label class="">Phone Number*:</label>
-                  <input v-model="user.phone" type="text" class="form-control" placeholder="0981112233"
-                         maxlength="10" required>
-                </div>
+  <div class="profile-container">
+    <div class="profile-body container">
+      <div class="personal-data">
+        <h2 class="profile-title">Personal Data</h2>
+        <form @submit.prevent="updateUserInfo">
+          <div class="personal_body">
+            <div class="body_column">
+              <div class="body_column-item">
+                <label>First Name*:</label>
+                <input v-model="user.firstName" type="text" class="form-control" placeholder="First Name"
+                       required maxlength="256">
+              </div>
+              <div class="body_column-item">
+                <label>Last Name*:</label>
+                <input v-model="user.lastName" type="text" class="form-control" placeholder="Last Name" required
+                       maxlength="256">
+              </div>
+              <div class="body_column-item">
+                <label>Email:</label>
+                <input type="text" class="form-control" :value="user.email" readonly>
+              </div>
+              <div class="body_column-item">
+                <label>Phone Number*:</label>
+                <input v-model="user.phone" type="text" class="form-control" placeholder="0981112233"
+                       maxlength="10" required>
               </div>
             </div>
-            <div class="personal_btn">
-              <button class="btn btn-outline-primary" type="submit">Save</button>
-            </div>
-          </form>
-        </div>
-        <div class="personal-orders">
-          <label class="profile-title">My Orders</label>
-          <div>
-            <table class="table table-hover">
-              <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Order date</th>
-                <th scope="col">Sale date</th>
-                <th scope="col">Status</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr v-for="order in userOrder" :key="order.id"  @click="openWindow(order)">
-                <td>{{ order.id }}</td>
-                <td>{{formatDate(order.orderDate)}}</td>
-                <td>{{formatDate(order.saleDate)}}</td>
-                <td>{{order.status}}</td>
-              </tr>
-              </tbody>
-            </table>
           </div>
+          <div class="personal_btn">
+            <button class="btn btn-outline-primary" type="submit">Save</button>
+          </div>
+        </form>
+      </div>
+      <div class="personal-orders">
+        <h2 class="profile-title">My Orders</h2>
+        <div>
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Order Date</th>
+              <th scope="col">Sale Date</th>
+              <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="order in userOrder" :key="order.id" @click="openWindow(order)">
+              <td>{{ order.id }}</td>
+              <td>{{ formatDate(order.orderDate) }}</td>
+              <td>{{ formatDate(order.saleDate) }}</td>
+              <td>{{ order.status }}</td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
+    <ModalWindow ref="ModalWindow">
+      <OrderModal :order="chooseOrder" :modal-close="closeModal" :is-user="true"/>
+    </ModalWindow>
   </div>
-  <ModalWindow ref="ModalWindow">
-    <OrderModal :order="chooseOrder" :modal-close="()=>{this.$refs.ModalWindow.closeModal()}" />
-  </ModalWindow>
 </template>
 
 <script>
@@ -126,12 +124,10 @@ export default {
 </script>
 
 <style scoped>
-.body {
+.profile-container {
   display: flex;
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 0 1em;
-  height: auto;
-  width: 1000px;
+  justify-content: center;
+  padding: 2em;
 }
 
 .profile-body {
@@ -139,20 +135,73 @@ export default {
   flex-direction: column;
   gap: 4em;
   width: 100%;
+  max-width: 1000px;
+  background-color: rgba(255, 255, 255, 0.8);
   padding: 2em;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
-.profile-body > div {
+.profile-title {
+  color: var(--blue-opacity);
+  font-size: 18pt;
+  font-weight: 500;
+  margin-bottom: 1em;
+}
+
+.personal_body {
   display: flex;
   flex-direction: column;
   gap: 1.5em;
 }
 
-.profile-title {
-  color: var(--blue-opacity);
-  font-size: 16pt;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
+.body_column {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.body_column-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.body_column-item label {
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+
+.form-control {
+  border-radius: 5px;
+  padding: 0.5em;
+  border: 1px solid #ced4da;
+}
+
+.personal_btn {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1em;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 1em;
+  background-color: #fff;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.75em;
+  text-align: left;
+  border-top: 1px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-hover tbody tr {
+  cursor: pointer;
 }
 </style>

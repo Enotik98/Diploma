@@ -1,7 +1,7 @@
 <template>
   <div class="container d-flex justify-content-center ">
-<!--    <div class="back-link" @click="$router.go(-1)"><i class="fa-solid fa-chevron-left"-->
-<!--                                                      style="color: #000000;"></i><span>Back</span></div>-->
+    <!--    <div class="back-link" @click="$router.go(-1)"><i class="fa-solid fa-chevron-left"-->
+    <!--                                                      style="color: #000000;"></i><span>Back</span></div>-->
     <div id="book_body">
       <div class="product">
         <img src="../assets/car.jpg" class="card-img-left" alt="Book">
@@ -16,30 +16,31 @@
           </div>
           <div class="order-control">
             <label class="form-label mb-0">Quantity</label>
-            <input type="number" min="1" max="15" class="form-control" v-model="order.quantity">
-            <button class="btn btn-outline-dark" @click="addToOrder">Add</button>
-            <!--          <button class="btn btn-outline-dark" @click="createOrder" name="order" :disabled="!isAvailable">Add To Cart</button>-->
-            <!--          <div v-if="!isAvailable" class="form-text warning">The book isn't available. Please try to order later</div>-->
-            <!--          <div v-if="isSanctions && isLoggedIn" class="form-text warning">You account has a sanctions. For details information, contact with the-->
-            <!--            administra/tor. </div>-->
+            <div class="input-group">
+              <input type="number" min="1" max="15" class="form-control" v-model="order.quantity">
+              <button class="btn btn-outline-dark w-25" @click="addToOrder">Add</button>
+            </div>
+            <div class="btn-group my-2 w-100" role="group" v-if="store.$state.userRole === 'ADMIN' || store.$state.userRole === 'SELLER'">
+              <button class="btn btn-outline-dark w-50" @click="openModal">Edit</button>
+              <button class="btn btn-outline-danger w-50" v-if="store.$state.userRole === 'ADMIN'">Delete</button>
+            </div>
           </div>
           <span class="card-about">About: <br>{{ book.about }}</span>
         </div>
       </div>
     </div>
-    <!--    <div class="edit-book" v-if="!isUser">-->
-    <!--      <button class="btn btn-outline-dark mb-1" @click="openModal">Edit</button>-->
-    <!--      <button class="btn btn-outline-danger" @click="deleteBook">Delete</button>-->
-    <!--    </div>-->
-    <!--    <ModalWindow ref="ModalWindow">-->
-    <!--      <CreateBook :edit-book="book" :modalClose="() => {this.$refs.ModalWindow.closeModal()}" :genres="genres"/>-->
-    <!--    </ModalWindow>-->
-    <!--    {{ $route.params.id }}-->
+    <ModalWindow ref="ModalWindow">
+      <AddBookModal :genres="genres" :modal-close="closeModal" :edit-book="book"/>
+    </ModalWindow>
   </div>
 </template>
 
 <script>
 import {sendRequest} from "@/scripts/request";
+import {userStore} from "@/stores/userStore.js";
+import {getGenreList} from "@/scripts/utils.js";
+import ModalWindow from "@/components/ModalWindow.vue";
+import AddBookModal from "@/components/AddBookModal.vue";
 // import Header from "@/components/Header.vue";
 // import {calculateDate, getGenreName} from "@/scripts/utils";
 // import {mapState} from "vuex";
@@ -49,7 +50,14 @@ import {sendRequest} from "@/scripts/request";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Product",
-  components: {},
+  components: {AddBookModal, ModalWindow},
+  setup() {
+    const store = userStore();
+
+    return {
+      store
+    };
+  },
   data() {
     return {
       book: {},
@@ -62,18 +70,26 @@ export default {
       },
       isAvailable: false,
       errorMess: null,
+      genres: []
     }
   },
-  // computed: {
-  //   ...mapState(['isUser', 'isLoggedIn', "isSanctions"])
-  // },
   mounted() {
     this.getBook();
-    // this.getGenres();
+    this.getGenres();
   },
   methods: {
     openModal() {
       this.$refs.ModalWindow.openModal();
+    },
+    closeModal() {
+      this.$refs.ModalWindow.closeModal();
+      this.getBook();
+    },
+    async getGenres() {
+      const response = await getGenreList();
+      if (response.ok) {
+        this.genres = await response.json();
+      }
     },
     async getBook() {
       try {
@@ -91,14 +107,15 @@ export default {
       }
     },
     async addToOrder() {
-      try {
+      if (this.store.$state.isLoggedIn) {
         this.order.bookId = this.$route.params.id;
         const response = await sendRequest("/sale/basket", "POST", this.order);
         if (response.ok) {
           console.log('ok')
         }
-      } catch (e) {
-        console.error(e)
+      } else {
+        alert("You need to login or register");
+        this.$router.push("/login");
       }
     }
     // async createOrder() {

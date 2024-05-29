@@ -15,6 +15,8 @@
         <span class="card_author">{{ book.author }}</span>
       </div>
       <div class="card_footer">
+        <span class="card_title">{{ (book.price/100).toFixed(2) }}$</span>
+
         <!-- <router-link :to="{name: 'Product', params: {id: book.id}}" >More information</router-link> -->
       </div>
     </div>
