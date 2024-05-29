@@ -1,7 +1,7 @@
 <template>
   <header class="">
     <nav class="navbar">
-      <span><router-link to="/" class="logo">LibraryPlusPlus</router-link></span>
+      <span><router-link to="/" class="logo">BookStore</router-link></span>
       <ul>
         <li><router-link to="/" class="link" exact><div class="nav-item" >Catalog</div></router-link></li>
         <li><router-link to="/orders" class="link" exact><div class="nav-item">Orders</div></router-link></li>

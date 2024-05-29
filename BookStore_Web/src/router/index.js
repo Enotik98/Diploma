@@ -4,6 +4,9 @@ import Product from "@/views/Product.vue";
 import Authorization from "@/views/Authorization.vue";
 import Orders from "@/views/Orders.vue";
 import Analytics from "@/views/Analytics.vue";
+import Users from "@/views/Users.vue";
+import Profile from "@/views/Profile.vue";
+import CreateSale from "@/views/CreateSale.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,6 +44,21 @@ const router = createRouter({
       name: 'Analytics',
       component: Analytics
 
+    },
+    {
+      path: '/users',
+      name: 'Users',
+      component: Users
+    },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: Profile
+    },
+    {
+      path: '/sale/create',
+      name: 'CreateSale',
+      component: CreateSale
     }
   ]
 })

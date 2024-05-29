@@ -20,8 +20,6 @@ public class AuthTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private UserService userService;
-    @Autowired
     private ObjectMapper objectMapper;
 
 //    @Test
@@ -30,7 +28,7 @@ public class AuthTest {
 //        authDTO.setEmail("test1@gmail.com");
 //        authDTO.setPassword("password");
 //
-//        ResultActions resultActions = mockMvc.perform(post("/registration")
+//        ResultActions resultActions = mockMvc.perform(post("/api/registration")
 //                .contentType(MediaType.APPLICATION_JSON)
 //                .content(objectMapper.writeValueAsString(authDTO)));
 //        resultActions.andExpect(status().isOk());
@@ -43,7 +41,7 @@ public class AuthTest {
         authDTO.setEmail("test1@gmail.com");
         authDTO.setPassword("password");
 
-        ResultActions resultActions = mockMvc.perform(post("/login")
+        ResultActions resultActions = mockMvc.perform(post("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(authDTO)));
         resultActions.andExpect(status().isOk());
@@ -54,7 +52,7 @@ public class AuthTest {
         authDTO.setEmail("tes@gmail.com");
         authDTO.setPassword("password");
 
-        ResultActions resultActions = mockMvc.perform(post("/login")
+        ResultActions resultActions = mockMvc.perform(post("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(authDTO)));
         resultActions.andExpect(status().isUnauthorized());

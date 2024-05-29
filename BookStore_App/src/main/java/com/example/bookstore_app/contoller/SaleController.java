@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/sale")
@@ -38,6 +39,9 @@ public class SaleController {
     @PostMapping("/basket")
     public ResponseEntity<?> addBasket(@Valid @RequestBody SaleBookDTO saleBookDTO, BindingResult bindingResult) {
         try {
+            if (bindingResult.hasErrors()) {
+                return ResponseEntity.badRequest().body(CustomException.bindingResultToString(bindingResult) + " Please fill correct in these fields.");
+            }
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             int userId = Integer.parseInt(authentication.getName());
 
@@ -54,10 +58,32 @@ public class SaleController {
     @PostMapping("/sale_order")
     public ResponseEntity<?> complitedOrder(@Valid @RequestBody SaleOnlineDTO saleOnlineDTO, BindingResult bindingResult) {
         try {
+            if (bindingResult.hasErrors()) {
+                return ResponseEntity.badRequest().body(CustomException.bindingResultToString(bindingResult) + " Please fill correct in these fields.");
+            }
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             int userId = Integer.parseInt(authentication.getName());
 
             saleService.finishOrder(saleOnlineDTO,userId);
+            return ResponseEntity.ok("add successful");
+
+        } catch (IllegalArgumentException FormatException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fields have incorrect values");
+        } catch (CustomException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/sale_shop")
+    public ResponseEntity<?> saleRegistration(@Valid @RequestBody List<SaleBookDTO> saleBookDTOList, BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return ResponseEntity.badRequest().body(CustomException.bindingResultToString(bindingResult) + " Please fill correct in these fields.");
+            }
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            int userId = Integer.parseInt(authentication.getName());
+
+            saleService.createShopSale(saleBookDTOList, userId);
             return ResponseEntity.ok("add successful");
 
         } catch (IllegalArgumentException FormatException) {

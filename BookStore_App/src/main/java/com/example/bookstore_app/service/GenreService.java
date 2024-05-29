@@ -1,5 +1,6 @@
 package com.example.bookstore_app.service;
 
+import com.example.bookstore_app.dto.GenreDTO;
 import com.example.bookstore_app.entity.Genre;
 import com.example.bookstore_app.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class GenreService {
         return genreRepository.save(genre);
     }
 
-    public Optional<Genre> updateGenre(int id, Genre genreDetails) {
+    public Optional<Genre> updateGenre(int id, GenreDTO genreDetails) {
         return genreRepository.findById(id)
                 .map(genre -> {
                     genre.setGenre(genreDetails.getGenre());

@@ -30,6 +30,8 @@ public class BookDTO {
     @NotEmpty(message = "ISBN mustn't be empty.")
     private String isbn;
     private String about;
+    private String path_img;
+
     private List<Integer> genres;
     public static Book toEntity(BookDTO bookDTO) {
         Book book = new Book();
@@ -41,6 +43,7 @@ public class BookDTO {
         book.setQuantity(bookDTO.getQuantity());
         book.setISBN(bookDTO.getIsbn());
         book.setAbout(bookDTO.getAbout());
+        book.setPath_img(bookDTO.getPath_img());
         return book;
     }
 }

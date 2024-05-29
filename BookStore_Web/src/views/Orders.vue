@@ -1,15 +1,15 @@
 <template>
-  <div class="container d-flex mt-4">
-    <div class="w-100">
-      <div>
-        <span class="title">Orders</span>
+  <div class="container d-flex">
+    <div class="w-100" id="order-list">
+      <div class="">
+        <p class="title">Orders</p>
         <table class="table table-hover">
           <thead>
           <tr>
-            <th>#</th>
-            <th>Email</th>
-            <th>Order Date</th>
-            <th>Status</th>
+            <th scope="col">#</th>
+            <th scope="col">Email</th>
+            <th scope="col">Order Date</th>
+            <th scope="col">Status</th>
           </tr>
           </thead>
           <tbody>
@@ -56,6 +56,9 @@
           <!--          </tr>-->
           <!--          </tbody>-->
         </table>
+      </div>
+      <div>
+        <button class="btn btn-outline-dark" @click="()=>{this.$router.push('/sale/create')}">Create</button>
       </div>
     </div>
 
@@ -141,10 +144,19 @@ export default {
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+
+  padding-bottom: 0.5em;
+  margin: 0;
 }
 
 .td-id {
   width: 6em;
+}
+#order-list {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2em 1em;
+}
+.table {
 }
 
 

@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class AnalitycsService {
+public class AnalyticsService {
     @Autowired
     private SaleRepository saleRepository;
     private static final double SMOOTHING_FACTOR = 0.2;

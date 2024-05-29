@@ -26,7 +26,6 @@ export default {
   name: "BookCard",
   props: {
     book: Object,
-    genre: String,
   },
   computed: {},
   methods: {

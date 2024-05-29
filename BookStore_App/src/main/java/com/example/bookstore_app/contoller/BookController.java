@@ -1,6 +1,7 @@
 package com.example.bookstore_app.contoller;
 
 import com.example.bookstore_app.dto.BookDTO;
+import com.example.bookstore_app.dto.GenreDTO;
 import com.example.bookstore_app.entity.Book;
 import com.example.bookstore_app.entity.Genre;
 import com.example.bookstore_app.service.BookService;
@@ -44,6 +45,20 @@ public class BookController {
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
         }
     }
+    @GetMapping("/search")
+    public List<Book> searchBooks(@RequestParam("query") String query) {
+        return bookService.searchBooks(query);
+    }
+
+    @GetMapping("/genre")
+    public ResponseEntity<?> getAllGenre() {
+        try {
+            return ResponseEntity.ok(genreService.getAllGenres());
+        } catch (CustomException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createBookWithGenres(@Valid @RequestBody BookDTO bookDTO, BindingResult bindingResult) {
         try {
@@ -67,6 +82,17 @@ public class BookController {
     public ResponseEntity<?> createGenre(@RequestBody Genre genre) {
         try {
             genreService.createGenre(genre);
+            return ResponseEntity.ok("add successful");
+        } catch (IllegalArgumentException FormatException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fields have incorrect values");
+        } catch (CustomException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
+    }
+    @PutMapping("/genre")
+    public ResponseEntity<?> updateGenre(@RequestBody GenreDTO genre) {
+        try {
+            genreService.updateGenre(genre.getId(), genre);
             return ResponseEntity.ok("add successful");
         } catch (IllegalArgumentException FormatException) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fields have incorrect values");

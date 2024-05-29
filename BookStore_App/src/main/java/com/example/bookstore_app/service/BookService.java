@@ -38,6 +38,9 @@ public class BookService {
             throw new CustomException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+    public List<Book> searchBooks(String query) {
+        return bookRepository.findByTitleOrIsbnContaining(query);
+    }
 
     public void createBook(BookDTO bookDTO) {
         try {
@@ -46,9 +49,11 @@ public class BookService {
                 throw new CustomException(HttpStatus.CONFLICT, "A book with this title already exists");
             }
             Book book = BookDTO.toEntity(bookDTO);
+            book.setPrice(bookDTO.getPrice() * 100);
 
             // Збереження книги у базі даних
             Book savedBook = bookRepository.save(book);
+
 
             // Оновлення жанрів у книзі
             List<Genre> genres = bookDTO.getGenres().stream()
